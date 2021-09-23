@@ -4,6 +4,10 @@ resource "aws_route53_zone" "private1" {
   }
 
   name = "private1."
+
+  lifecycle {
+    ignore_changes = [vpc]
+  }
 }
 
 resource "aws_route53_record" "private1_hello" {

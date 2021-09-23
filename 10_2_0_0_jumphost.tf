@@ -45,6 +45,10 @@ echo hello world
 
 EOF
 
+  tags = {
+    Name = "jumphost_10_2_0_0"
+  }
+
 }
 
 output "jumphost_10_2_0_0" {
