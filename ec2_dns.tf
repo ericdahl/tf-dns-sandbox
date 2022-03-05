@@ -1,4 +1,3 @@
-
 resource "aws_security_group" "ec2_dns" {
   vpc_id = module.vpc_dns.vpc.id
 
@@ -36,7 +35,6 @@ resource "aws_security_group_rule" "ec2_dns_egress_all" {
 
 resource "aws_network_interface" "dns" {
   subnet_id = module.vpc_dns.subnets.private["us-east-1a"].id
-#  private_ips = ["10.1.101.111"]
   tags = {
     Name = "dns_10_1_0_0"
   }
@@ -50,7 +48,7 @@ resource "aws_instance" "dns" {
   ami = data.aws_ssm_parameter.amazon_linux_2.value
 
   instance_type = "t2.small"
-  key_name = aws_key_pair.default.key_name
+  key_name      = aws_key_pair.default.key_name
 
   network_interface {
     network_interface_id = aws_network_interface.dns.id

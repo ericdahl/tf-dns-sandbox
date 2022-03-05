@@ -34,5 +34,5 @@ resource "aws_route53_zone_association" "private1" {
   for_each = { for v in module.vpc_workload : v.vpc.cidr_block => v.vpc.id }
 
   zone_id = aws_route53_zone.private1.id
-  vpc_id = each.value
+  vpc_id  = each.value
 }

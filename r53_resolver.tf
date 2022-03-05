@@ -32,17 +32,17 @@ resource "aws_route53_resolver_endpoint" "outbound" {
   ]
   ip_address {
     subnet_id = module.vpc_dns.subnets.private["us-east-1a"].id
-#    ip        = "10.1.101.5"
+    #    ip        = "10.1.101.5"
   }
 
   ip_address {
     subnet_id = module.vpc_dns.subnets.private["us-east-1b"].id
-#    ip        = "10.1.102.5"
+    #    ip        = "10.1.102.5"
   }
 
   ip_address {
     subnet_id = module.vpc_dns.subnets.private["us-east-1c"].id
-#    ip        = "10.1.103.5"
+    #    ip        = "10.1.103.5"
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_route53_resolver_rule" "onprem" {
   name = "onprem"
 
   domain_name = "onprem."
-  rule_type = "FORWARD"
+  rule_type   = "FORWARD"
 
   resolver_endpoint_id = aws_route53_resolver_endpoint.outbound.id
 
@@ -60,12 +60,12 @@ resource "aws_route53_resolver_rule" "onprem" {
   }
 }
 
-resource "aws_route53_resolver_rule_association" "onprem_workload" {
+resource "aws_route53_resolver_rule_association" "onprem" {
 
-  for_each = { for v in merge(module.vpc_workload, {(module.vpc_dns.vpc.cidr_block) = module.vpc_dns}) : v.vpc.cidr_block => v.vpc.id }
+  for_each = { for v in merge(module.vpc_workload, { (module.vpc_dns.vpc.cidr_block) = module.vpc_dns }) : v.vpc.cidr_block => v.vpc.id }
 
   resolver_rule_id = aws_route53_resolver_rule.onprem.id
-  vpc_id = each.value
+  vpc_id           = each.value
 }
 
 resource "aws_cloudwatch_log_group" "route53_resolver_query_log" {
@@ -77,8 +77,8 @@ resource "aws_route53_resolver_query_log_config" "default" {
   name            = "tf-dns-sandbox"
 }
 
-resource "aws_route53_resolver_query_log_config_association" "workload" {
-  for_each = { for v in module.vpc_workload : v.vpc.cidr_block => v.vpc.id }
+resource "aws_route53_resolver_query_log_config_association" "default" {
+  for_each = { for v in merge(module.vpc_workload, { (module.vpc_dns.vpc.cidr_block) = module.vpc_dns }) : v.vpc.cidr_block => v.vpc.id }
 
   resolver_query_log_config_id = aws_route53_resolver_query_log_config.default.id
   resource_id                  = each.value
