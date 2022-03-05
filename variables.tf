@@ -1,6 +1,3 @@
-variable "public_key" {
-}
+variable "admin_ip_cidr" {}
 
-variable "admin_cidrs" {
-  default = []
-}
+variable "public_key" {}

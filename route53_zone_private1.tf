@@ -1,6 +1,6 @@
 resource "aws_route53_zone" "private1" {
   vpc {
-    vpc_id = aws_vpc.vpc_10_1_0_0.id
+    vpc_id = module.vpc_dns.vpc.id
   }
 
   name = "private1."
@@ -31,11 +31,8 @@ resource "aws_route53_record" "private1_a" {
 }
 
 resource "aws_route53_zone_association" "private1" {
-  for_each = {
-    "10.2.0.0" : aws_vpc.vpc_10_2_0_0.id
-  }
+  for_each = { for v in module.vpc_workload : v.vpc.cidr_block => v.vpc.id }
 
   zone_id = aws_route53_zone.private1.id
   vpc_id = each.value
-
 }
