@@ -8,6 +8,9 @@ provider "aws" {
   }
 }
 
+locals {
+  all_vpcs_map = merge(module.vpc_workload, { (module.vpc_dns.vpc.cidr_block) = module.vpc_dns })
+}
 
 data "aws_ssm_parameter" "amazon_linux_2" {
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"

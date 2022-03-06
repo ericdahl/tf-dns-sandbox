@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "ec2_dns_egress_all" {
 resource "aws_network_interface" "dns" {
   subnet_id = module.vpc_dns.subnets.private["us-east-1a"].id
   tags = {
-    Name = "dns_10_1_0_0"
+    Name = "dns"
   }
 
   security_groups = [
@@ -47,7 +47,7 @@ resource "aws_network_interface" "dns" {
 resource "aws_instance" "dns" {
   ami = data.aws_ssm_parameter.amazon_linux_2.value
 
-  instance_type = "t2.small"
+  instance_type = "t3a.nano"
   key_name      = aws_key_pair.default.key_name
 
   network_interface {
@@ -57,8 +57,6 @@ resource "aws_instance" "dns" {
 
   user_data = <<EOF
 #!/usr/bin/env bash
-
-echo hello world
 
 yum install -y dnsmasq
 
